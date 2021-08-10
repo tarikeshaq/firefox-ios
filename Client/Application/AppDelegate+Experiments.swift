@@ -39,7 +39,10 @@ extension AppDelegate {
             log.info("Nimbus: server does not exist")
             options = Experiments.InitializationOptions.normal
         }
-
-        Experiments.intialize(options)
+//        if isFirstRun {
+            Experiments.initializeFirstRun(options)
+//        } else {
+//            Experiments.intialize(options)
+//        }
     }
 }

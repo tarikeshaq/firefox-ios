@@ -217,6 +217,37 @@ enum Experiments {
 
         log.info("Nimbus is initializing!")
     }
+    
+    public static func initializeFirstRun(_ options: InitializationOptions) {
+        let nimbus = Experiments.shared
+
+        nimbus.initialize()
+
+        switch options {
+        case .preload(let url): nimbus.setExperimentsLocally(url)
+        case .testing(let payload): nimbus.setExperimentsLocally(payload)
+        default: break /* noop */
+        }
+
+        // on first run, we want to get the experiments from remote settings
+        // first
+        let start = DispatchTime.now()
+        NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
+            let end = DispatchTime.now()
+            let timeElapsed = end.uptimeNanoseconds - start.uptimeNanoseconds
+            let timeInterval = Double(timeElapsed) / 1_000_000_000 // Technically could overflow for long running tests
+            log.info("Time elapsed before available: \(timeInterval) seconds!")
+        }
+        nimbus.fetchExperiments()
+        NotificationCenter.default.addObserver(forName: .nimbusExperimentsFetched, object: nil, queue: .main) { _ in
+            let fetchEnd = DispatchTime.now()
+            let timeElapsed = fetchEnd.uptimeNanoseconds - start.uptimeNanoseconds
+            let timeInterval = Double(timeElapsed) / 1_000_000_000 // Technically could overflow for long running tests
+            log.info("Time elapsed before fetch is done: \(timeInterval) seconds!")
+            nimbus.applyPendingExperiments()
+        }
+        log.info("Nimbus is initializing on First Run!")
+    }
 }
 
 /// Additional methods to allow us to use an application specific `FeatureId` enum.
