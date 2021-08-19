@@ -217,7 +217,65 @@ enum Experiments {
 
         log.info("Nimbus is initializing!")
     }
+    
+    public static var experimentsApplied: Bool = false
+    
+    public static func onExperimentsApplied(callback: @escaping () -> Void) {
+        // If the experiments were already applied
+        // in the past, we should just execute the
+        // callback
+        if experimentsApplied {
+            callback()
+            return
+        }
+        
+        // We sometimes will have to wait for the experiments
+        // to be applied (since the apply runs on a seperate thread)
+        var applyObserver: NSObjectProtocol?
+        applyObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
+            experimentsApplied = true
+            callback()
+            // Safe to to unwrap the observer, since the block
+            // will only execute after the observer is created
+            // on the main thread
+            NotificationCenter.default.removeObserver(applyObserver!)
+        }
+    }
+    
+    public static func initializeFirstRun(_ options: InitializationOptions) {
+        let nimbus = Experiments.shared
+
+        nimbus.initialize()
+
+        switch options {
+        case .preload(let url): nimbus.setExperimentsLocally(url)
+        case .testing(let payload): nimbus.setExperimentsLocally(payload)
+        default: break /* noop */
+        }
+        
+        var fetchObserver: NSObjectProtocol?
+        fetchObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsFetched, object: nil, queue: .main) { _ in
+            nimbus.applyPendingExperiments()
+            // Safe to to unwrap the observer, since the block
+            // will only execute after the observer is created
+            // on the main thread
+            NotificationCenter.default.removeObserver(fetchObserver!)
+        }
+        var applyObserver: NSObjectProtocol?
+        applyObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
+            experimentsApplied = true
+            // Safe to to unwrap the observer, since the block
+            // will only execute after the observer is created
+            // on the main thread
+            NotificationCenter.default.removeObserver(applyObserver!)
+        }
+        
+        nimbus.fetchExperiments()
+        
+        log.info("Nimbus is initializing on First Run!")
+    }
 }
+
 
 /// Additional methods to allow us to use an application specific `FeatureId` enum.
 extension NimbusApi {
