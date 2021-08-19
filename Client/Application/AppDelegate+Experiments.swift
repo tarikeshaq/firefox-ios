@@ -14,6 +14,7 @@ extension AppDelegate {
         let nimbusFirstRun = "NimbusFirstRun"
         let isFirstRun = defaults.object(forKey: nimbusFirstRun) == nil
         defaults.set(false, forKey: nimbusFirstRun)
+        log.info("[nimbus]: is First run: \(isFirstRun)")
         Experiments.customTargetingAttributes =  ["isFirstRun": "\(isFirstRun)"]
         let initialExperiments = Bundle.main.url(forResource: "initial_experiments", withExtension: "json")
         let serverURL = Experiments.remoteSettingsURL

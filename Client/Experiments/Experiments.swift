@@ -131,11 +131,11 @@ enum Experiments {
             return nil
         }
 
-        if usePreviewCollection() {
+//        if usePreviewCollection() {
             return NimbusServerSettings(url: url, collection: "nimbus-preview")
-        } else {
-            return NimbusServerSettings(url: url)
-        }
+//        } else {
+//            return NimbusServerSettings(url: url)
+//        }
     }()
 
     /// The `NimbusApi` object. This is the entry point to do anything with the Nimbus SDK on device.
@@ -271,6 +271,9 @@ enum Experiments {
             // will only execute after the observer is created
             // on the main thread
             NotificationCenter.default.removeObserver(fetchObserver!)
+            // TODO: Remove this fetchExperiments and modify the underlying
+            // rust code to re-evaluate enrollment on every run.
+            nimbus.fetchExperiments()
         }
         
         nimbus.fetchExperiments()
