@@ -183,6 +183,24 @@ enum Experiments {
             return NimbusDisabled.shared
         }
     }()
+    
+    public static var waitingOnExperimentsQueue: [() -> Void] = []
+    
+    
+    public static func listenApplyPendingExperiments() {
+        var applyObserver: NSObjectProtocol?
+        applyObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
+            experimentsApplied = true
+            for callback in waitingOnExperimentsQueue {
+                callback()
+            }
+            waitingOnExperimentsQueue.removeAll()
+            // Safe to to unwrap the observer, since the block
+            // will only execute after the observer is created
+            // on the main thread
+            NotificationCenter.default.removeObserver(applyObserver!)
+        }
+    }
 
     /// A convenience method to initialize the `NimbusApi` object at startup.
     ///
@@ -205,6 +223,8 @@ enum Experiments {
         default: break /* noop */
         }
 
+        listenApplyPendingExperiments()
+
         // We should immediately calculate the experiment enrollments
         // that we've just acquired from the fileURL, or we fetched last run.
         nimbus.applyPendingExperiments()
@@ -218,7 +238,7 @@ enum Experiments {
         log.info("Nimbus is initializing!")
     }
     
-    public static var experimentsApplied: Bool = false
+    static var experimentsApplied: Bool = false
     
     public static func onExperimentsApplied(callback: @escaping () -> Void) {
         // If the experiments were already applied
@@ -228,18 +248,7 @@ enum Experiments {
             callback()
             return
         }
-        
-        // We sometimes will have to wait for the experiments
-        // to be applied (since the apply runs on a seperate thread)
-        var applyObserver: NSObjectProtocol?
-        applyObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
-            experimentsApplied = true
-            callback()
-            // Safe to to unwrap the observer, since the block
-            // will only execute after the observer is created
-            // on the main thread
-            NotificationCenter.default.removeObserver(applyObserver!)
-        }
+        waitingOnExperimentsQueue.append(callback)
     }
     
     public static func initializeFirstRun(_ options: InitializationOptions) {
@@ -253,6 +262,8 @@ enum Experiments {
         default: break /* noop */
         }
         
+        listenApplyPendingExperiments()
+
         var fetchObserver: NSObjectProtocol?
         fetchObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsFetched, object: nil, queue: .main) { _ in
             nimbus.applyPendingExperiments()
@@ -260,14 +271,6 @@ enum Experiments {
             // will only execute after the observer is created
             // on the main thread
             NotificationCenter.default.removeObserver(fetchObserver!)
-        }
-        var applyObserver: NSObjectProtocol?
-        applyObserver = NotificationCenter.default.addObserver(forName: .nimbusExperimentsApplied, object: nil, queue: .main) { _ in
-            experimentsApplied = true
-            // Safe to to unwrap the observer, since the block
-            // will only execute after the observer is created
-            // on the main thread
-            NotificationCenter.default.removeObserver(applyObserver!)
         }
         
         nimbus.fetchExperiments()
