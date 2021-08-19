@@ -137,6 +137,14 @@ enum Experiments {
 //            return NimbusServerSettings(url: url)
 //        }
     }()
+    
+    public static var isFirstRun: Bool = {
+        let defaults = UserDefaults.standard
+        let nimbusFirstRun = "NimbusFirstRun"
+        let isFirstRun = defaults.object(forKey: nimbusFirstRun) == nil
+        defaults.set(false, forKey: nimbusFirstRun)
+        return isFirstRun
+    }()
 
     /// The `NimbusApi` object. This is the entry point to do anything with the Nimbus SDK on device.
     public static var shared: NimbusApi = {
@@ -271,9 +279,6 @@ enum Experiments {
             // will only execute after the observer is created
             // on the main thread
             NotificationCenter.default.removeObserver(fetchObserver!)
-            // TODO: Remove this fetchExperiments and modify the underlying
-            // rust code to re-evaluate enrollment on every run.
-            nimbus.fetchExperiments()
         }
         
         nimbus.fetchExperiments()

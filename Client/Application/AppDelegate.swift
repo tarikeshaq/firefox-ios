@@ -27,19 +27,6 @@ let LatestAppVersionProfileKey = "latestAppVersion"
 let AllowThirdPartyKeyboardsKey = "settings.allowThirdPartyKeyboards"
 private let InitialPingSentKey = "initialPingSent"
 
-
-extension UIAlertController {
-
-    func presentInOwnWindow(animated: Bool, completion: (() -> Void)?) {
-        let alertWindow = UIWindow(frame: UIScreen.main.bounds)
-        alertWindow.rootViewController = UIViewController()
-        alertWindow.windowLevel = UIWindow.Level.alert + 1;
-        alertWindow.makeKeyAndVisible()
-        alertWindow.rootViewController?.present(self, animated: animated, completion: completion)
-    }
-}
-
-
 extension UIAlertController {
    
     private static var globalPresentationWindow: UIWindow?
@@ -117,7 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     func startApplication(_ application: UIApplication, withLaunchOptions launchOptions: [AnyHashable: Any]?) -> Bool {
         log.info("startApplication begin")
         let startTime = DispatchTime.now()
-
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
         // before getting the Profile.
         let sendUsageData = NSUserDefaultsPrefs(prefix: "profile").boolForKey(AppConstants.PrefSendUsageData) ?? true
@@ -198,16 +184,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         rootViewController = navigationController
 
         self.window!.rootViewController = rootViewController
-        Experiments.onExperimentsApplied {
-            let endTime = DispatchTime.now()
-            let timeElapsed = endTime.uptimeNanoseconds - startTime.uptimeNanoseconds
-            let variables = Experiments.shared.getVariables(featureId: .nimbusValidation)
-            let message = variables.getText("message") ?? "It's not the first run!"
-            let alert = UIAlertController(title: "Experiment Data ready!", message: "Time elapsed: \(timeElapsed / 1_000_000) seconds -- message: \(message)", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
-            NSLog("The \"OK\" alert occured.")
-            }))
-            alert.presentGlobally(animated: true, completion: nil)
+        if Experiments.isFirstRun {
+            Experiments.onExperimentsApplied {
+                let endTime = DispatchTime.now()
+                let timeElapsed = endTime.uptimeNanoseconds - startTime.uptimeNanoseconds
+                let variables = Experiments.shared.getVariables(featureId: .nimbusValidation)
+                let message = variables.getText("message") ?? "It's not the first run!"
+                let alert = UIAlertController(title: "Experiment Data ready!", message: "Time elapsed: \(timeElapsed / 1_000_000) seconds -- message: \(message)", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+                }))
+                alert.presentGlobally(animated: true, completion: nil)
+            }
         }
     }
 
