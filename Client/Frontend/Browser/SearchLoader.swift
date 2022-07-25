@@ -18,14 +18,14 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
 class SearchLoader: Loader<Cursor<Site>, SearchViewController>, FeatureFlaggable {
     fileprivate let profile: Profile
     fileprivate let urlBar: URLBarView
-    fileprivate let frecentHistory: FrecentHistory
+    fileprivate let history: BrowserHistory
 
     private var skipNextAutocomplete: Bool
 
     init(profile: Profile, urlBar: URLBarView) {
         self.profile = profile
         self.urlBar = urlBar
-        self.frecentHistory = profile.history.getFrecentHistory()
+        self.history = profile.history
 
         self.skipNextAutocomplete = false
 
@@ -39,7 +39,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController>, FeatureFlaggable
 
     // `weak` usage here allows deferred queue to be the owner. The deferred is always filled and this set to nil,
     // this is defensive against any changes to queue (or cancellation) behaviour in future.
-    private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site>>>?
+    private weak var currentDeferredHistoryQuery: Deferred<Maybe<Cursor<Site>>>?
 
     fileprivate func getBookmarksAsSites(matchingSearchQuery query: String, limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
         return profile.places.searchBookmarks(query: query, limit: 5).bind { result in
@@ -59,30 +59,19 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController>, FeatureFlaggable
                 return
             }
 
-            currentDeferredHistoryQuery?.cancel()
+            // Stop any other read operations, so that we can start this one
+            history.interruptReader()
 
             if query.isEmpty {
                 load(Cursor(status: .success, msg: "Empty query"))
                 return
             }
 
-            guard let deferredHistory = frecentHistory.getSites(matchingSearchQuery: query, limit: 100) as? CancellableDeferred else {
-                assertionFailure("FrecentHistory query should be cancellable")
-                return
-            }
-
-            currentDeferredHistoryQuery = deferredHistory
+            let deferredHistory = history.queryAutocomplete(matchingSearchQuery: query, limit: 100)
 
             let deferredBookmarks = getBookmarksAsSites(matchingSearchQuery: query, limit: 5)
 
             all([deferredHistory, deferredBookmarks]).uponQueue(.main) { results in
-                defer {
-                    self.currentDeferredHistoryQuery = nil
-                }
-
-                guard !deferredHistory.cancelled else {
-                    return
-                }
 
                 let deferredHistorySites = results[0].successValue?.asArray() ?? []
                 let deferredBookmarksSites = results[1].successValue?.asArray() ?? []

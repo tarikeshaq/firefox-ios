@@ -981,7 +981,7 @@ class TestSQLiteHistory: XCTestCase {
             >>> { history.storeRemoteVisits([siteVisitBR1], forGUID: siteB.guid!) }
 
             >>> {
-                history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 3)
+                history.queryAutocomplete(matchingSearchQuery: nil, limit: 3)
                 >>== { (sites: Cursor) -> Success in
                     XCTAssertEqual(3, sites.count)
 
@@ -1108,8 +1108,8 @@ class TestSQLiteHistory: XCTestCase {
         let site3 = Site(url: "http://www.example2.com/test1", title: "title three")
         let expectation = self.expectation(description: "First.")
 
-        let clearTopSites = "DELETE FROM cached_top_sites"
-        let updateTopSites: [(String, Args?)] = [(clearTopSites, nil), (history.getFrecentHistory().updateTopSitesCacheQuery())]
+//        let clearTopSites = "DELETE FROM cached_top_sites"
+//        let updateTopSites: [(String, Args?)] = [(clearTopSites, nil), (history.getFrecentHistory().updateTopSitesCacheQuery())]
 
         func countTopSites() -> Deferred<Maybe<Cursor<Int>>> {
             return db.runQuery("SELECT count(*) FROM cached_top_sites", args: nil, factory: { sdrow -> Int in
@@ -1331,7 +1331,7 @@ class TestSQLiteHistory: XCTestCase {
         let history = SQLiteHistory(db: db, prefs: prefs)
 
         history.setTopSitesCacheSize(20)
-        history.clearTopSitesCache().succeeded()
+//        history.clearTopSitesCache().succeeded()
         history.clearHistory().succeeded()
 
         // Lets create some history. This will create 3 sites that will have 4 local and 4 remote visits
@@ -1351,8 +1351,8 @@ class TestSQLiteHistory: XCTestCase {
         let prefs = MockProfilePrefs()
         let history = SQLiteHistory(db: db, prefs: prefs)
 
-        history.setTopSitesCacheSize(20)
-        history.clearTopSitesCache().succeeded()
+//        history.setTopSitesCacheSize(20)
+//        history.clearTopSitesCache().succeeded()
         history.clearHistory().succeeded()
 
         // Lets create some history. This will create 100 sites that will have 4 local and 4 remote visits

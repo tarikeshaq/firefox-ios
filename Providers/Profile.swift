@@ -29,7 +29,6 @@ public protocol SyncManager {
     var lastSyncFinishTime: Timestamp? { get set }
     var syncDisplayState: SyncDisplayState? { get }
 
-    func hasSyncedHistory() -> Deferred<Maybe<Bool>>
     func hasSyncedLogins() -> Deferred<Maybe<Bool>>
 
     func syncClients() -> SyncResult
@@ -97,7 +96,7 @@ protocol Profile: AnyObject {
     var queue: TabQueue { get }
     var searchEngines: SearchEngines { get }
     var files: FileAccessor { get }
-    var history: BrowserHistory & SyncableHistory & ResettableSyncStorage { get }
+    var history: BrowserHistory { get }
     var metadata: Metadata { get }
     var recommendations: HistoryRecommendations { get }
     var favicons: Favicons { get }
@@ -448,8 +447,8 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    var history: BrowserHistory & SyncableHistory & ResettableSyncStorage {
-        return self.legacyPlaces
+    var history: BrowserHistory {
+        return self.places
     }
 
     lazy var metadata: Metadata = {
@@ -887,7 +886,7 @@ open class BrowserProfile: Profile {
                 return TabsSynchronizer.resetClientsAndTabsWithStorage(self.profile.remoteClientsAndTabs, basePrefs: self.prefsForSync)
 
             case "history":
-                return HistorySynchronizer.resetSynchronizerWithStorage(self.profile.history, basePrefs: self.prefsForSync, collection: "history")
+                return self.profile.places.resetHistoryMetadata()
             case "passwords":
                 return self.profile.logins.resetSync()
             case "forms":
@@ -914,7 +913,7 @@ open class BrowserProfile: Profile {
 
             // Run these in order, because they might write to the same DB!
             let remove = [
-                profile.history.onRemovedAccount,
+                profile.places.resetHistoryMetadata,
                 profile.remoteClientsAndTabs.onRemovedAccount,
                 profile.logins.resetSync,
                 profile.places.resetBookmarksMetadata,
@@ -1002,8 +1001,20 @@ open class BrowserProfile: Profile {
 
         fileprivate func syncHistoryWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: SyncReason) -> SyncResult {
             log.debug("Syncing history to storage.")
-            let historySynchronizer = ready.synchronizer(HistorySynchronizer.self, delegate: delegate, prefs: prefs, why: why)
-            return historySynchronizer.synchronizeLocalHistory(self.profile.history, withServer: ready.client, info: ready.info, greenLight: self.greenLight())
+            return syncUnlockInfo().bind({ result in
+                guard let syncUnlockInfo = result.successValue else {
+                    return deferMaybe(SyncStatus.notStarted(.unknown))
+                }
+
+                return self.profile.places.syncHistory(unlockInfo: syncUnlockInfo).bind({ result in
+                    guard result.isSuccess else {
+                        return deferMaybe(SyncStatus.notStarted(.unknown))
+                    }
+
+                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "bookmarks")
+                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
+                })
+            })
         }
 
         public class ScopedKeyError: MaybeErrorType {
@@ -1323,10 +1334,6 @@ open class BrowserProfile: Profile {
 
         @objc func syncOnTimer() {
             self.syncEverything(why: .scheduled)
-        }
-
-        public func hasSyncedHistory() -> Deferred<Maybe<Bool>> {
-            return self.profile.history.hasSyncedHistory()
         }
 
         public func hasSyncedLogins() -> Deferred<Maybe<Bool>> {

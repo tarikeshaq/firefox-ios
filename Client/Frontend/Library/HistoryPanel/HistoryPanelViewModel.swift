@@ -124,13 +124,17 @@ class HistoryPanelViewModel: Loggable, FeatureFlaggable {
 
     func performSearch(term: String, completion: @escaping (Bool) -> Void) {
         isFetchInProgress = true
+        self.browserLog.debug("Starting search")
 
-        profile.history.getHistory(matching: term,
-                                   limit: searchQueryFetchLimit,
-                                   offset: searchCurrentFetchOffset) { results in
+        profile.history.queryAutocomplete(matchingSearchQuery: term,
+                                          limit: searchQueryFetchLimit).uponQueue(.main) { results in
             self.isFetchInProgress = false
-            self.searchResultSites = results
-            completion(!results.isEmpty)
+            guard let searchResults = results.successValue else {
+                return
+            }
+            self.searchResultSites = searchResults.asArray()
+            self.browserLog.debug(self.searchResultSites)
+            completion(!self.searchResultSites.isEmpty)
         }
     }
 
@@ -189,6 +193,7 @@ class HistoryPanelViewModel: Loggable, FeatureFlaggable {
 
                 self.browserLog.debug("currentFetchOffset is: \(self.currentFetchOffset)")
             }
+            
 
             return deferMaybe(result)
         }

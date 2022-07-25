@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0
 
 import Shared
+import MozillaAppServices
 
 open class IgnoredSiteError: MaybeErrorType {
     open var description: String {
@@ -24,13 +25,14 @@ public protocol BrowserHistory {
     func removeHistoryFromDate(_ date: Date) -> Success
     func removeSiteFromTopSites(_ site: Site) -> Success
     func removeHostFromTopSites(_ host: String) -> Success
-    func getFrecentHistory() -> FrecentHistory
-    func getHistory(matching searchTerm: String, limit: Int, offset: Int, completion: @escaping ([Site]) -> Void)
+    func queryAutocomplete(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site>>>
     func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site>>>
     func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>>
     func setTopSitesNeedsInvalidation()
     func setTopSitesCacheSize(_ size: Int32)
     func clearTopSitesCache() -> Success
+    func interruptReader()
+    func interruptWriter()
 
     // Pinning top sites
     func removeFromPinnedTopSites(_ site: Site) -> Success
@@ -43,7 +45,6 @@ public protocol BrowserHistory {
  * An interface for fast repeated frecency queries.
  */
 public protocol FrecentHistory {
-    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site>>>
     func updateTopSitesCacheQuery() -> (String, Args?)
 }
 

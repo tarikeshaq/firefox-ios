@@ -390,6 +390,20 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
 }
 
 extension SQLiteHistory: BrowserHistory {
+    public func queryAutocomplete(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+        deferMaybe(ArrayCursor(data: []))
+    }
+    
+    public func interruptWriter() {
+        // stub
+    }
+
+    public func interruptReader() {
+        // stub
+    }
+
+
+    
     public func removeSiteFromTopSites(_ site: Site) -> Success {
         if let host = (site.url as String).asURL?.normalizedHost {
             return self.removeHostFromTopSites(host)
@@ -607,10 +621,6 @@ extension SQLiteHistory: BrowserHistory {
          >>> { self.addLocalVisitForExistingSite(visit) }
     }
 
-    public func getFrecentHistory() -> FrecentHistory {
-        return SQLiteFrecentHistory(db: db, prefs: prefs)
-    }
-
     public func getHistory(matching searchTerm: String,
                            limit: Int,
                            offset: Int,
@@ -652,10 +662,6 @@ extension SQLiteHistory: BrowserHistory {
             prefs.setInt(size, forKey: PrefsKeys.KeyTopSitesCacheSize)
             setTopSitesNeedsInvalidation()
         }
-    }
-
-    public func refreshTopSitesQuery() -> [(String, Args?)] {
-        return [clearTopSitesQuery, getFrecentHistory().updateTopSitesCacheQuery()]
     }
 
     public func clearTopSitesCache() -> Success {

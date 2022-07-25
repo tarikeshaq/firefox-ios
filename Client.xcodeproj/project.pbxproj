@@ -14589,10 +14589,10 @@
 		};
 		433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mozilla/rust-components-swift.git";
+			repositoryURL = "file:///Users/tarikeshaq/code/rust-components-swift";
 			requirement = {
-				kind = exactVersion;
-				version = 93.1.0;
+				branch = "test-test-test";
+				kind = branch;
 			};
 		};
 		435C85EE2788F4D00072B526 /* XCRemoteSwiftPackageReference "glean-swift" */ = {

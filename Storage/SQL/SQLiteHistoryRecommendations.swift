@@ -58,11 +58,12 @@ extension SQLiteHistory: HistoryRecommendations {
     }
 
     public func repopulate(invalidateTopSites shouldInvalidateTopSites: Bool) -> Success {
-        if shouldInvalidateTopSites {
-            return db.run(refreshTopSitesQuery())
-        } else {
-            return succeed()
-        }
+//        if shouldInvalidateTopSites {
+//            return db.run(refreshTopSitesQuery())
+//        } else {
+//            return succeed()
+//        }
+        return succeed()
     }
 
 }
