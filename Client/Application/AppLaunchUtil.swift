@@ -24,6 +24,17 @@ extension PlacesMigrationConfiguration {
     }
 }
 
+extension PlacesApiConfiguration {
+    func into() -> HistoryAPIConfiguration {
+        switch self {
+        case .old:
+            return .old
+        case .new:
+            return .new
+        }
+    }
+}
+
 class AppLaunchUtil {
 
     private var log: RollingFileLogger
@@ -197,11 +208,13 @@ class AppLaunchUtil {
     private func runAppServicesHistoryMigration() {
         let placesHistory = FxNimbus.shared.features.placesHistory.value()
         FxNimbus.shared.features.placesHistory.recordExposure()
+        let browserProfile = self.profile as? BrowserProfile
+        browserProfile?.historyApiConfiguration = placesHistory.api.into()
         guard placesHistory.migration != .disabled else {
             log.info("Migration disabled, won't run migration")
             return
         }
-        let browserProfile = self.profile as? BrowserProfile
+        
         let migrationRanKey = "PlacesHistoryMigrationRan" + placesHistory.migration.rawValue
         let migrationRan = UserDefaults.standard.bool(forKey: migrationRanKey)
         UserDefaults.standard.setValue(true, forKey: migrationRanKey)

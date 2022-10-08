@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var orientationLock = UIInterfaceOrientationMask.all
     lazy var themeManager: ThemeManager = DefaultThemeManager(appDelegate: self)
     lazy var profile: Profile = BrowserProfile(localName: "profile",
-                                               syncDelegate: UIApplication.shared.syncDelegate)
+                                               syncDelegate: UIApplication.shared.syncDelegate, historyApiConfiguration: FxNimbus.shared.features.placesHistory.value().api.into())
     private let log = Logger.browserLogger
     private var shutdownWebServer: DispatchSourceTimer?
     private var webServerUtil: WebServerUtil?
