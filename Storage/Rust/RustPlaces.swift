@@ -344,7 +344,7 @@ public class RustPlaces: BookmarksHandler {
 
         return deferred
     }
-    
+
     public func syncHistory(unlockInfo: SyncUnlockInfo) -> Success {
         let deferred = Success()
 
@@ -390,7 +390,7 @@ public class RustPlaces: BookmarksHandler {
 
         return deferred
     }
-    
+
     public func resetHistoryMetadata() -> Success {
          let deferred = Success()
 
@@ -571,7 +571,6 @@ extension RustPlaces {
             return try connection.queryAutocomplete(search: filter, limit: Int32(limit))
         }
     }
-    
 
     public func getVisitPageWithBound(limit: Int, offset: Int, excludedTypes: VisitTransitionSet) -> Deferred<Maybe<HistoryVisitInfosWithBound>> {
         return withReader { connection in
@@ -585,4 +584,3 @@ extension RustPlaces {
         }
     }
 }
-
