@@ -70,6 +70,65 @@
       "proposedDuration": 28,
       "proposedEnrollment": 7,
       "referenceBranch": "control"
+    },
+    {
+      "schemaVersion": "1.9.0",
+      "slug": "firefox-ios-places-experiment",
+      "id": "firefox-ios-places-experiment",
+      "arguments": {},
+      "application": "org.mozilla.ios.Firefox",
+      "appName": "firefox_ios",
+      "appId": "org.mozilla.ios.Firefox",
+      "channel": "developer",
+      "userFacingName": "Firefox iOS Places upgrade",
+      "userFacingDescription": "This is for testing.",
+      "isEnrollmentPaused": false,
+      "isRollout": false,
+      "bucketConfig": {
+        "randomizationUnit": "nimbus_id",
+        "namespace": "ios-mr2022-release-1",
+        "start": 0,
+        "count": 10000,
+        "total": 10000
+      },
+      "featureIds": [
+        "places-history"
+      ],
+      "probeSets": [],
+      "outcomes": [],
+      "branches": [
+        {
+          "slug": "control",
+          "ratio": 1,
+          "feature": {
+            "featureId": "places-history",
+            "enabled": true,
+            "value": {
+              "migration": "disabled",
+              "api": "old"
+            }
+          }
+        },
+        {
+          "slug": "treatment-a",
+          "ratio": 0,
+          "feature": {
+            "featureId": "places-history",
+            "enabled": true,
+            "value": {
+              "migration": "real",
+              "api": "new"
+            }
+          }
+        }
+      ],
+      "targeting": "true",
+      "startDate": "2022-10-07",
+      "enrollmentEndDate": "2022-10-21",
+      "endDate": null,
+      "proposedDuration": 28,
+      "proposedEnrollment": 7,
+      "referenceBranch": "control"
     }
   ]
 }

@@ -1514,7 +1514,6 @@ class BrowserViewController: UIViewController {
 
     func navigateInTab(tab: Tab, to navigation: WKNavigation? = nil, webViewStatus: WebViewUpdateStatus) {
         tabManager.expireSnackbars()
-
         guard let webView = tab.webView else {
             print("Cannot navigate in tab without a webView")
             return
