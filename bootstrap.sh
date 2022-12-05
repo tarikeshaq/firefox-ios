@@ -39,3 +39,7 @@ fi
 
 # Run and update content blocker
 ./content_blocker_update.sh
+
+pushd ./BrowserKit/application-services
+./libs/verify-ios-environment.sh
+popd

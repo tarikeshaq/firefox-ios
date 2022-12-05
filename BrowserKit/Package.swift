@@ -11,6 +11,7 @@ let package = Package(
         .library(
             name: "SiteImageView",
             targets: ["SiteImageView"]),
+        .library(name: "MozillaAppServices", targets: ["MozillaAppServices"]),
     ],
     dependencies: [
         .package(
@@ -21,6 +22,27 @@ let package = Package(
             exact: "7.2.2"),
     ],
     targets: [
+        /*
+        * A placeholder wrapper for our binaryTarget so that Xcode will ensure this is
+        * downloaded/built before trying to use it in the build process
+        * A bit hacky but necessary for now https://github.com/mozilla/application-services/issues/4422
+        */
+        .target(
+            name: "MozillaRustComponentsWrapper",
+            dependencies: [
+                .target(name: "MozillaRustComponents", condition: .when(platforms: [.iOS]))
+            ],
+            path: "Sources/MozillaRustComponentsWrapper"
+        ),
+        .binaryTarget(
+            name: "MozillaRustComponents",
+            path: "./bin/MozillaRustComponents.xcframework"
+        ),
+        .target(
+            name: "MozillaAppServices",
+            dependencies: ["MozillaRustComponentsWrapper"],
+            path: "Sources/application-services/"
+        ),
         .target(
             name: "SiteImageView",
             dependencies: ["Fuzi", "Kingfisher"]),

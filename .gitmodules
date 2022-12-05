@@ -1,0 +1,3 @@
+[submodule "BrowserKit/application-services"]
+	path = BrowserKit/application-services
+	url = https://github.com/mozilla/application-services
