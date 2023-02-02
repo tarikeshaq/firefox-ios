@@ -971,6 +971,10 @@ open class Ready: BaseSyncStateWithInfo {
         return scratchpad.engineConfiguration
     }
 
+    public var global: MetaGlobal? {
+        return scratchpad.global?.value
+    }
+
     public init(client: Sync15StorageClient, scratchpad: Scratchpad, token: TokenServerToken, info: InfoCollections, keys: Keys) {
         self.collectionKeys = keys
         super.init(client: client, scratchpad: scratchpad, token: token, info: info)

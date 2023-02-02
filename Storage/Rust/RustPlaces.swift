@@ -353,6 +353,38 @@ public class RustPlaces: BookmarksHandler, HistoryMetadataObserver {
         return deferred
     }
 
+    public func setHistorySyncIds(globalSyncId: String, collectionSyncId: String) -> Success {
+        let deferred = Success()
+
+        writerQueue.async {
+            guard self.isOpen else {
+                deferred.fill(Maybe(failure: PlacesConnectionError.connUseAfterApiClosed as MaybeErrorType))
+                return
+            }
+
+            do {
+                try _ = self.writer?.setSyncIds(globalSyncId: globalSyncId, collectionSyncId: collectionSyncId)
+                deferred.fill(Maybe(success: ()))
+            } catch let err as NSError {
+                if let placesError = err as? PlacesApiError {
+                    SentryIntegration.shared.sendWithStacktrace(message: "Places error setting the sync IDs for history",
+                                                                tag: SentryTag.rustPlaces,
+                                                                severity: .error,
+                                                                description: placesError.localizedDescription)
+                } else {
+                    SentryIntegration.shared.sendWithStacktrace(message: "Unknown error when setting the sync IDs for history",
+                                                                tag: SentryTag.rustPlaces,
+                                                                severity: .error,
+                                                                description: err.localizedDescription)
+                }
+
+                deferred.fill(Maybe(failure: err))
+            }
+        }
+
+        return deferred
+    }
+
     public func resetBookmarksMetadata() -> Success {
         let deferred = Success()
 

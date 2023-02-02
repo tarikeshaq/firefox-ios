@@ -51,7 +51,7 @@ extension EngineConfiguration: CustomStringConvertible {
 // we use them for meta/global itself.
 public struct EngineMeta: Equatable {
     let version: Int
-    let syncID: String
+    public let syncID: String
 
     public static func fromJSON(_ json: JSON) -> EngineMeta? {
         if let syncID = json["syncID"].string {
@@ -80,9 +80,13 @@ public func == (lhs: EngineMeta, rhs: EngineMeta) -> Bool {
 }
 
 public struct MetaGlobal: Equatable {
-    let syncID: String
+    // We need access to the syncID and the engines
+    // to support the migration to the places components
+    // in application services. All this code
+    // is dying soon when the sync manager is added.
+    public let syncID: String
     let storageVersion: Int
-    let engines: [String: EngineMeta]
+    public let engines: [String: EngineMeta]
     let declined: [String]
 
     // TODO: is it more useful to support partial globals?

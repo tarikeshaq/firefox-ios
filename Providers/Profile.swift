@@ -1141,13 +1141,28 @@ open class BrowserProfile: Profile {
                     return deferMaybe(SyncStatus.notStarted(.unknown))
                 }
 
-                return self.profile.places.syncHistory(unlockInfo: syncUnlockInfo).bind({ result in
-                    guard result.isSuccess else {
-                        return deferMaybe(SyncStatus.notStarted(.unknown))
-                    }
+                let hasSyncedAfterMigration = UserDefaults.standard.bool(forKey: PrefsKeys.HasSyncedPostHistoryMigration)
+                UserDefaults.standard.setValue(true, forKey: PrefsKeys.HasSyncedPostHistoryMigration)
+                let settingSyncKeys = Success()
 
-                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "history")
-                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
+                if !hasSyncedAfterMigration, let metaGlobal = ready.global, let historyEngine = metaGlobal.engines["history"] {
+                    let globalSyncID = metaGlobal.syncID
+                    let historySyncID = historyEngine.syncID
+                    self.profile.places.setHistorySyncIds(globalSyncId: globalSyncID, collectionSyncId: historySyncID).upon { res in
+                        settingSyncKeys.fill(Maybe(success: ()))
+                    }
+                } else {
+                    settingSyncKeys.fill(Maybe(success: ()))
+                }
+                return settingSyncKeys.bind({ _ in
+                    return self.profile.places.syncHistory(unlockInfo: syncUnlockInfo).bind({ result in
+                        guard result.isSuccess else {
+                            return deferMaybe(SyncStatus.notStarted(.unknown))
+                        }
+
+                        let syncEngineStatsSession = SyncEngineStatsSession(collection: "history")
+                        return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
+                    })
                 })
             })
         }

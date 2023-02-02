@@ -132,6 +132,9 @@ public struct PrefsKeys {
     // The number of times we have attempted the Application Services to Places DB migration
     public static let HistoryMigrationAttemptNumber = "HistoryMigrationAttemptNumber"
 
+    // Has the user synced at least once after migrated to the new history
+    public static let HasSyncedPostHistoryMigration = "HasSyncedPostHistoryMigration"
+
     // The last timestamp we polled FxA for missing send tabs
     public static let PollCommandsTimestamp = "PollCommandsTimestamp"
 }
