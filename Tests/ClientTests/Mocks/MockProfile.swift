@@ -72,6 +72,7 @@ class MockFiles: FileAccessor {
 }
 
 open class MockProfile: Client.Profile {
+    
     public var rustFxA: RustFirefoxAccounts {
         return RustFirefoxAccounts.shared
     }
@@ -82,6 +83,8 @@ open class MockProfile: Client.Profile {
     public var files: FileAccessor
     public var logins: RustLogins
     public var syncManager: ClientSyncManager!
+    public var pushManager: Client.Autopush
+
 
     fileprivate var legacyPlaces: PinnedSites
 
@@ -89,7 +92,6 @@ open class MockProfile: Client.Profile {
 
     var database: BrowserDB
     var readingListDB: BrowserDB
-
     fileprivate let name: String = "mockaccount"
 
     init(databasePrefix: String = "mock") {
@@ -108,6 +110,12 @@ open class MockProfile: Client.Profile {
         readingListDB = BrowserDB(filename: "\(databasePrefix)_ReadingList.db", schema: ReadingListSchema(), files: files)
         let placesDatabasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("\(databasePrefix)_places.db").path
         try? files.remove("\(databasePrefix)_places.db")
+
+        let pushDatabasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("\(databasePrefix)_push.db").path
+        try? files.remove("\(databasePrefix)_push.db")
+
+        pushManager = Autopush(dbPath: pushDatabasePath)
+        pushManager.reopenIfClosed()
 
         places = RustPlaces(databasePath: placesDatabasePath)
         _ = places.reopenIfClosed()

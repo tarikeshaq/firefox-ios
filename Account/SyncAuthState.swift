@@ -26,6 +26,25 @@ public struct FxAccountRemoteError {
     static let UnknownError: Int32                              = 999
 }
 
+extension String {
+    /// Returns a base64 url safe decoding of the given string.
+    /// The string is allowed to be padded
+    /// What is padding?: http://stackoverflow.com/a/26632221
+    var base64urlSafeDecodedData: Data? {
+        // We call this method twice: once with the last two args as nil, 0 – this gets us the length
+        // of the decoded string.
+        let length = ece_base64url_decode(self, self.count, ECE_BASE64URL_REJECT_PADDING, nil, 0)
+        guard length > 0 else { return nil }
+
+        // The second time, we actually decode, and copy it into a made to measure byte array.
+        var bytes = [UInt8](repeating: 0, count: length)
+        let checkLength = ece_base64url_decode(self, self.count, ECE_BASE64URL_REJECT_PADDING, &bytes, length)
+        guard checkLength == length else { return nil }
+
+        return Data(bytes: bytes, count: length)
+    }
+}
+
 public enum FxAClientError: Error, CustomStringConvertible {
     case remote(RemoteError)
     case local(NSError)

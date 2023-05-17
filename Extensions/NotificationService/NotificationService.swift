@@ -35,7 +35,8 @@ class NotificationService: UNNotificationServiceExtension {
         let display = SyncDataDisplay(content: content, contentHandler: contentHandler)
         self.display = display
 
-        let handler = FxAPushMessageHandler(with: profile)
+        profile.pushManager.reopenIfClosed(completion: {
+            let handler = FxAPushMessageHandler(with: profile)
 
         handler.handle(userInfo: userInfo).upon { res in
             guard res.isSuccess, let event = res.successValue else {

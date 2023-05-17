@@ -102,4 +102,7 @@ extension Notification.Name {
     public static let HistoryUpdated = Notification.Name("HistoryUpdated")
 
     public static let PresentIntroView = Notification.Name("PresentIntroView")
+
+    // MARK: Push
+    public static let PushRegistrationUpdated = Notification.Name("PushRegistrationUpdated")
 }

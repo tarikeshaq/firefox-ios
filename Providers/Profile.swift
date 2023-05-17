@@ -87,6 +87,7 @@ protocol Profile: AnyObject {
     var logins: RustLogins { get }
     var certStore: CertStore { get }
     var recentlyClosedTabs: ClosedTabsStore { get }
+    var pushManager: Autopush { get }
 
 #if !MOZ_TARGET_NOTIFICATIONSERVICE
     var readingList: ReadingList { get }
@@ -363,6 +364,17 @@ open class BrowserProfile: Profile {
         if let downloadsPath = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("Downloads").path {
             try? FileManager.default.createDirectory(atPath: downloadsPath, withIntermediateDirectories: true, attributes: nil)
         }
+
+        _ = NotificationCenter.default.addObserver(name: .PushRegistrationUpdated, queue: .main) { [weak self] _ in
+            self?.pushManager.subscribe(
+                scope: RustFirefoxAccounts.pushScope,
+                completion: { result in
+                    self?.rustFxA.handlePushRegistration(subscriptionResponse: result)
+                }, errCompletion: {err in
+              // TODO: do something here
+                }
+            )
+        }
     }
 
     func reopen() {
@@ -381,6 +393,7 @@ open class BrowserProfile: Profile {
         }
         _ = tabs.reopenIfClosed()
         _ = autofill.reopenIfClosed()
+        pushManager.reopenIfClosed()
     }
 
     func shutdown() {
@@ -504,6 +517,10 @@ open class BrowserProfile: Profile {
     lazy var autofillDbPath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("autofill.db").path
 
     lazy var autofill = RustAutofill(databasePath: autofillDbPath)
+
+    lazy var pushDbPath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("push.db").path
+
+    lazy var pushManager = Autopush(dbPath: pushDbPath)
 
     #if !MOZ_TARGET_NOTIFICATIONSERVICE && !MOZ_TARGET_SHARETO && !MOZ_TARGET_CREDENTIAL_PROVIDER
     lazy var searchEngines: SearchEngines = {
@@ -778,6 +795,7 @@ open class BrowserProfile: Profile {
 
     func removeAccount() {
         RustFirefoxAccounts.shared.disconnect()
+        self.pushManager.unsubscribe(scope: RustFirefoxAccounts.pushScope, completion: { }, errCompletion: {_ in})
 
         // Not available in extensions
         #if !MOZ_TARGET_NOTIFICATIONSERVICE && !MOZ_TARGET_SHARETO && !MOZ_TARGET_CREDENTIAL_PROVIDER

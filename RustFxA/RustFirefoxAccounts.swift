@@ -27,14 +27,15 @@ open class RustFirefoxAccounts {
     public static let prefKeyLastDeviceName = "prefKeyLastDeviceName"
     private static let clientID = "1b1a3e44c54fbb58"
     public static let redirectURL = "urn:ietf:wg:oauth:2.0:oob:oauth-redirect-webchannel"
+    public static let pushScope = "chrome://fxa-push-scope"
     public static var shared = RustFirefoxAccounts()
     public var accountManager = Deferred<FxAccountManager>()
     private static var isInitializingAccountManager = false
     public var avatar: Avatar?
     public let syncAuthState: SyncAuthState
     fileprivate static var prefs: Prefs?
-    public let pushNotifications = PushNotificationSetup()
     private let logger: Logger
+    private weak var pushManager: Autopush?
 
     // This is used so that if a migration failed, show a UI indicator for the user to manually log in to their account.
     public var accountMigrationFailed: Bool {
@@ -309,7 +310,6 @@ open class RustFirefoxAccounts {
         prefs?.removeObjectForKey(PendingAccountDisconnectedKey)
         self.syncAuthState.invalidate()
         cachedUserProfile = nil
-        pushNotifications.unregister()
         MZKeychainWrapper.sharedClientAppContainerKeychain.removeObject(forKey: KeychainKey.apnsToken, withAccessibility: .afterFirstUnlock)
     }
 
@@ -327,6 +327,20 @@ open class RustFirefoxAccounts {
     public func accountNeedsReauth() -> Bool {
         guard let accountManager = accountManager.peek() else { return false }
         return accountManager.accountNeedsReauth()
+    }
+
+    public func handlePushRegistration(subscriptionResponse: SubscriptionResponse) {
+        accountManager.upon { accountManager in
+            if let oldEndpoint = accountManager.deviceConstellation()?.state()?.localDevice?.pushSubscription?.endpoint,
+               oldEndpoint == subscriptionResponse.subscriptionInfo.endpoint {
+                // already up to date
+                return
+            }
+            let devicePush = DevicePushSubscription(endpoint: subscriptionResponse.subscriptionInfo.endpoint,
+                                                    publicKey: subscriptionResponse.subscriptionInfo.keys.p256dh,
+                                                    authKey: subscriptionResponse.subscriptionInfo.keys.auth)
+            accountManager.deviceConstellation()?.setDevicePushSubscription(sub: devicePush)
+        }
     }
 }
 

@@ -111,15 +111,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate {
-    func application(_ application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        var notificationAllowed = true
-        if FeatureFlagsManager.shared.isFeatureEnabled(.notificationSettings, checking: .buildOnly) {
-            notificationAllowed = UserDefaults.standard.bool(forKey: PrefsKeys.Notifications.SyncNotifications)
-        }
-
-        RustFirefoxAccounts.shared.pushNotifications.didRegister(withDeviceToken: deviceToken,
-                                                                 notificationAllowed: notificationAllowed)
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        profile.pushManager.didRegister(
+            withDeviceToken: deviceToken,
+            completion: {
+                self.notificationCenter.post(
+                    name: .PushRegistrationUpdated,
+                    withObject: nil
+                )
+            },
+            errCompletion: {err in
+                // TODO: Do somethign here
+            }
+        )
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
