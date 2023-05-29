@@ -112,18 +112,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        profile.pushManager.didRegister(
-            withDeviceToken: deviceToken,
-            completion: {
-                self.notificationCenter.post(
-                    name: .PushRegistrationUpdated,
-                    withObject: nil
-                )
-            },
-            errCompletion: {err in
-                // TODO: Do somethign here
-            }
-        )
+        let notificationCenter = self.notificationCenter
+        let pushManager = profile.pushManager
+        Task(priority: nil) {
+            try await pushManager.didRegister(withDeviceToken: deviceToken)
+            notificationCenter.post(
+                name: .PushRegistrationUpdated,
+                withObject: nil
+            )
+        }
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

@@ -15,12 +15,20 @@ open class Autopush {
         self.pushClient = nil
     }
 
-    private func withClient(_ fn: @escaping (PushManagerProtocol) -> Void) {
-        guard let pushClient = pushClient else {
-            return
-        }
-        DispatchQueue.global(qos: .default).async {
-            fn(pushClient)
+    private func withClient<T>(_ fn: @escaping (PushManagerProtocol) throws -> T) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let pushClient = pushClient else {
+                continuation.resume(throwing: PushApiError.InternalError(message: ("No push client initialized")))
+                return
+            }
+            DispatchQueue.global().async {
+                do {
+                    let ret = try fn(pushClient)
+                    continuation.resume(returning: ret)
+                } catch let e {
+                    continuation.resume(throwing: e)
+                }
+            }
         }
     }
 
@@ -38,47 +46,27 @@ open class Autopush {
         }
     }
 
-    public func didRegister(withDeviceToken deviceToken: Data, completion: @escaping () -> Void, errCompletion: @escaping (Error) -> Void) {
-        withClient { pushClient in
-            do {
-                try pushClient.update(registrationToken: deviceToken.hexEncodedString)
-                completion()
-            } catch let e {
-                errCompletion(e)
-            }
+    public func didRegister(withDeviceToken deviceToken: Data) async throws {
+        try await withClient { pushClient in
+            try pushClient.update(registrationToken: deviceToken.hexEncodedString)
         }
     }
 
-    public func subscribe(scope: String, completion: @escaping (SubscriptionResponse) -> Void, errCompletion: @escaping (Error) -> Void) {
-        withClient { pushClient in
-            do {
-                let res = try pushClient.subscribe(scope: scope, appServerSey: nil)
-                completion(res)
-            } catch let e {
-                errCompletion(e)
-            }
+    public func subscribe(scope: String) async throws -> SubscriptionResponse {
+        try await withClient { pushClient in
+            return try pushClient.subscribe(scope: scope, appServerSey: nil)
         }
     }
 
-    public func unsubscribe(scope: String, completion: @escaping () -> Void, errCompletion: @escaping (Error) -> Void) {
-        withClient { pushClient in
-            do {
-                try pushClient.unsubscribe(scope: scope)
-                completion()
-            } catch let e {
-                errCompletion(e)
-            }
+    public func unsubscribe(scope: String) async throws -> Bool {
+        return try await withClient { pushClient in
+            return try pushClient.unsubscribe(scope: scope)
         }
     }
 
-    public func decrypt(payload: [String: String], completion: @escaping (DecryptResponse) -> Void, errCompletion: @escaping (Error) -> Void) {
-        withClient { pushClient in
-            do {
-                let res = try pushClient.decrypt(payload: payload)
-                completion(res)
-            } catch let e {
-                errCompletion(e)
-            }
+    public func decrypt(payload: [String: String]) async throws -> DecryptResponse {
+        return try await withClient { pushClient in
+            return try pushClient.decrypt(payload: payload)
         }
     }
 }

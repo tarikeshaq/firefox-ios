@@ -366,14 +366,16 @@ open class BrowserProfile: Profile {
         }
 
         _ = NotificationCenter.default.addObserver(name: .PushRegistrationUpdated, queue: .main) { [weak self] _ in
-            self?.pushManager.subscribe(
-                scope: RustFirefoxAccounts.pushScope,
-                completion: { result in
-                    self?.rustFxA.handlePushRegistration(subscriptionResponse: result)
-                }, errCompletion: {err in
-              // TODO: do something here
+            let pushManager = self?.pushManager
+            let fxa = self?.rustFxA
+            Task(priority: nil) {
+                let res = try await pushManager?.subscribe(
+                    scope: RustFirefoxAccounts.pushScope
+                )
+                if let res = res {
+                    fxa?.handlePushRegistration(subscriptionResponse: res)
                 }
-            )
+            }
         }
     }
 
@@ -795,7 +797,10 @@ open class BrowserProfile: Profile {
 
     func removeAccount() {
         RustFirefoxAccounts.shared.disconnect()
-        self.pushManager.unsubscribe(scope: RustFirefoxAccounts.pushScope, completion: { }, errCompletion: {_ in})
+        let pushManager = self.pushManager
+        Task(priority: nil) {
+            try await pushManager.unsubscribe(scope: RustFirefoxAccounts.pushScope)
+        }
 
         // Not available in extensions
         #if !MOZ_TARGET_NOTIFICATIONSERVICE && !MOZ_TARGET_SHARETO && !MOZ_TARGET_CREDENTIAL_PROVIDER

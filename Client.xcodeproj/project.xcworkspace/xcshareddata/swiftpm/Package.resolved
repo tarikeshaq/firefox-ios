@@ -86,8 +86,8 @@
       "kind" : "localSourceControl",
       "location" : "/Users/tarikeshaq/code/rust-components-swift",
       "state" : {
-        "revision" : "847b83192f6ebbcb51529f175fe8331b73e68312",
-        "version" : "115.0.20230524160034"
+        "branch" : "main",
+        "revision" : "187b820473e41540533e587135d6ba4e6e73be02"
       }
     },
     {

@@ -38,14 +38,15 @@ class NotificationService: UNNotificationServiceExtension {
         profile.pushManager.reopenIfClosed(completion: {
             let handler = FxAPushMessageHandler(with: profile)
 
-        handler.handle(userInfo: userInfo).upon { res in
-            guard res.isSuccess, let event = res.successValue else {
-                self.didFinish(nil, with: res.failureValue as? PushMessageError)
-                return
-            }
+            handler.handle(userInfo: userInfo).upon { res in
+                guard res.isSuccess, let event = res.successValue else {
+                    self.didFinish(nil, with: res.failureValue as? PushMessageError)
+                    return
+                }
 
-            self.didFinish(event)
-        }
+                self.didFinish(event)
+            }
+        })
     }
 
     func didFinish(_ what: PushMessage? = nil, with error: PushMessageError? = nil) {

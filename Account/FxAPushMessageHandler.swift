@@ -41,10 +41,10 @@ extension FxAPushMessageHandler {
         let deferred = PushMessageResults()
         
 
-
-        self.profile.pushManager.decrypt(
-            payload: payload,
-            completion: { decryptResult in
+        let pushManager = self.profile.pushManager
+        let payloadV = payload
+        let handle = Task(priority: nil) {
+            let decryptResult = try await pushManager.decrypt(payload: payloadV)
             guard let decryptedString = String(bytes: decryptResult.result.map {byte in UInt8(byte) }, encoding: .utf8) else {
                 // The app will detect this missing, and re-register. see AppDelegate+PushNotifications.swift.
                 // TODO: Do something here
@@ -56,7 +56,7 @@ extension FxAPushMessageHandler {
             // service will crash.
             DispatchQueue.main.async {
                 RustFirefoxAccounts.reconfig(prefs: self.profile.prefs).uponQueue(.main) { accountManager in
-                    accountManager.deviceConstellation()?.handlePushMessage(pushPayload: string) {
+                    accountManager.deviceConstellation()?.handlePushMessage(pushPayload: decryptedString) {
                         result in
                         guard case .success(let event) = result else {
                             let err: PushMessageError
@@ -118,9 +118,7 @@ extension FxAPushMessageHandler {
                     }
                 }
             }
-        }, errCompletion: {err in
-            deferred.fill(Maybe(failure: PushMessageError.messageIncomplete(err.localizedDescription)))
-        })
+        }
         return deferred
     }
 }
