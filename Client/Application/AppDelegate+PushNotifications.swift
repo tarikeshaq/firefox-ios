@@ -115,7 +115,7 @@ extension AppDelegate {
         let notificationCenter = self.notificationCenter
         let pushManager = profile.pushManager
         Task(priority: nil) {
-            try await pushManager.didRegister(withDeviceToken: deviceToken)
+            try await pushManager.updateToken(withDeviceToken: deviceToken)
             notificationCenter.post(
                 name: .PushRegistrationUpdated,
                 withObject: nil
