@@ -1,21 +1,162 @@
 {
   "data": [
     {
-      "schemaVersion": "1.10.0",
-      "slug": "ios-search-bar-placement-v2",
-      "id": "ios-search-bar-placement-v2",
+      "schemaVersion": "1.12.0",
+      "slug": "ios-felt-privacy",
+      "id": "ios-felt-privacy",
       "arguments": {},
       "application": "org.mozilla.ios.Firefox",
       "appName": "firefox_ios",
       "appId": "org.mozilla.ios.Firefox",
       "channel": "release",
-      "userFacingName": "iOS Search Bar Placement v2",
-      "userFacingDescription": "Search Bar Placement",
+      "userFacingName": "iOS Felt Privacy",
+      "userFacingDescription": "Copy focused on privacy",
       "isEnrollmentPaused": false,
       "isRollout": false,
       "bucketConfig": {
         "randomizationUnit": "nimbus_id",
-        "namespace": "ios-search-release-3",
+        "namespace": "ios-onboarding-framework-feature-release-6",
+        "start": 0,
+        "count": 10000,
+        "total": 10000
+      },
+      "featureIds": [
+        "onboarding-framework-feature"
+      ],
+      "probeSets": [],
+      "outcomes": [
+        {
+          "slug": "onboarding",
+          "priority": "primary"
+        },
+        {
+          "slug": "default_browser",
+          "priority": "secondary"
+        }
+      ],
+      "branches": [
+        {
+          "slug": "control",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "open-instructions-popup"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    },
+                    "instructions-popup": {
+                      "title": "Switch Your Default Browser",
+                      "button-title": "Go To Settings",
+                      "button-action": "open-ios-fx-settings",
+                      "instructions": [
+                        "1. Go to *Settings*",
+                        "2. Tap *Default Browser App*",
+                        "3. Select *Firefox*"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "slug": "treatment-a",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "We love keeping you safe",
+                    "body": "Our non-profit backed browser helps stop companies from secretly following you around the web.",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "open-instructions-popup"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    },
+                    "instructions-popup": {
+                      "title": "Switch Your Default Browser",
+                      "button-title": "Go To Settings",
+                      "button-action": "open-ios-fx-settings",
+                      "instructions": [
+                        "1. Go to *Settings*",
+                        "2. Tap *Default Browser App*",
+                        "3. Select *Firefox*"
+                      ]
+                    }
+                  },
+                  "sign-to-sync": {
+                    "title": "Stay encrypted when you hop between devices",
+                    "body": "When you’re signed in and synced, you’re safer. Firefox encrypts your passwords, bookmarks, and more."
+                  },
+                  "notification-permissions": {
+                    "title": "Notifications help you stay safer with Firefox",
+                    "body": "Securely send tabs between your devices and discover other privacy features in Firefox."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('116.!') >= 0) && (language in ['en'])))",
+      "startDate": "2023-07-27",
+      "enrollmentEndDate": "2023-08-15",
+      "endDate": null,
+      "proposedDuration": 28,
+      "proposedEnrollment": 14,
+      "referenceBranch": "control",
+      "featureValidationOptOut": false,
+      "localizations": null,
+      "locales": null
+    },
+    {
+      "schemaVersion": "1.12.0",
+      "slug": "ios-search-bar-placement-v2-treatment-a-rollout",
+      "id": "ios-search-bar-placement-v2-treatment-a-rollout",
+      "arguments": {},
+      "application": "org.mozilla.ios.Firefox",
+      "appName": "firefox_ios",
+      "appId": "org.mozilla.ios.Firefox",
+      "channel": "release",
+      "userFacingName": "iOS Search Bar Placement v2 - Treatment A Rollout",
+      "userFacingDescription": "Search Bar Placement",
+      "isEnrollmentPaused": false,
+      "isRollout": true,
+      "bucketConfig": {
+        "randomizationUnit": "nimbus_id",
+        "namespace": "ios-search-release-mobile_first_run-rollout-1",
         "start": 0,
         "count": 10000,
         "total": 10000
@@ -27,230 +168,284 @@
       "outcomes": [],
       "branches": [
         {
-          "slug": "control",
-          "ratio": 1,
-          "feature": {
-            "featureId": "search",
-            "enabled": true,
-            "value": {
-              "awesome-bar": {
-                "position": {
-                  "is-position-feature-enabled": true,
-                  "is-bottom": true,
-                  "is-toolbar-cfr-on": false
-                }
-              }
-            }
-          }
-        },
-        {
           "slug": "treatment-a",
           "ratio": 1,
           "feature": {
-            "featureId": "search",
-            "enabled": true,
-            "value": {
-              "awesome-bar": {
-                "position": {
-                  "is-position-feature-enabled": true,
-                  "is-bottom": false,
-                  "is-toolbar-cfr-on": false
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "search",
+              "enabled": true,
+              "value": {
+                "awesome-bar": {
+                  "position": {
+                    "is-position-feature-enabled": true,
+                    "is-bottom": false,
+                    "is-toolbar-cfr-on": false
+                  }
                 }
               }
             }
-          }
+          ]
         }
       ],
-      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('108.!') >= 0)))",
-      "startDate": "2022-11-30",
-      "enrollmentEndDate": "2022-06-10",
+      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('113.!') >= 0)))",
+      "startDate": "2023-04-17",
+      "enrollmentEndDate": "2023-04-24",
       "endDate": null,
-      "proposedDuration": 63,
-      "proposedEnrollment": 21,
-      "referenceBranch": "control",
-      "featureValidationOptOut": false
+      "proposedDuration": 28,
+      "proposedEnrollment": 7,
+      "referenceBranch": "treatment-a",
+      "featureValidationOptOut": false,
+      "localizations": null,
+      "locales": null
     },
     {
-      "schemaVersion": "1.10.0",
-      "slug": "message-experiment-default-browser-card",
-      "id": "message-experiment-default-browser-card",
+      "schemaVersion": "1.12.0",
+      "slug": "release-ios-on-boarding-challenge-the-default-copy",
+      "id": "release-ios-on-boarding-challenge-the-default-copy",
       "arguments": {},
       "application": "org.mozilla.ios.Firefox",
       "appName": "firefox_ios",
       "appId": "org.mozilla.ios.Firefox",
       "channel": "release",
-      "userFacingName": "iOS Message Experiment: Default Browser Card",
-      "userFacingDescription": "Experimenting on the messaging in the homepage card for default browser.",
+      "userFacingName": "[release] iOS On-boarding Challenge the Default Copy",
+      "userFacingDescription": "Testing copy and images in the first run onboarding that is consistent with marketing messaging.",
       "isEnrollmentPaused": false,
       "isRollout": false,
       "bucketConfig": {
         "randomizationUnit": "nimbus_id",
-        "namespace": "ios-messaging-release-1",
-        "start": 1700,
-        "count": 8000,
+        "namespace": "ios-onboarding-framework-feature-release-5",
+        "start": 0,
+        "count": 10000,
         "total": 10000
       },
       "featureIds": [
-        "messaging"
+        "onboarding-framework-feature"
+      ],
+      "probeSets": [],
+      "outcomes": [
+        {
+          "slug": "onboarding",
+          "priority": "primary"
+        },
+        {
+          "slug": "default_browser",
+          "priority": "secondary"
+        }
+      ],
+      "branches": [
+        {
+          "slug": "control",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "link": {
+                      "url": "https://www.mozilla.org/de-de/privacy/firefox/"
+                    },
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "slug": "treatment-a",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Du entscheidest, was Standard ist",
+                    "body": "Nimm nicht das Erstbeste, sondern das Beste für dich: Firefox schützt deine Privatsphäre.",
+                    "image": "welcome-ctd",
+                    "buttons": {
+                      "primary": {
+                        "title": "Als Standardbrowser festlegen",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  },
+                  "sign-to-sync": {
+                    "title": "Alles ist dort, wo du es brauchst",
+                    "body": "Wenn du willst, bringt Firefox deine Tabs und Passwörter auf all deine Geräte.",
+                    "image": "sync-devices-ctd"
+                  },
+                  "notification-permissions": {
+                    "title": "Du bestimmst, was Firefox kann",
+                    "body": "Benachrichtigungen helfen dabei, Tabs zwischen Geräten zu senden und Tipps zu erhalten.  ",
+                    "image": "notifications-ctd"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "slug": "treatment-b",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "image": "welcome-ctd",
+                    "link": {
+                      "title": "Onboarding/Onboarding.Welcome.Link.Action.v114",
+                      "url": "https://www.mozilla.org/de-de/privacy/firefox/"
+                    },
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  },
+                  "sign-to-sync": {
+                    "image": "sync-devices-ctd"
+                  },
+                  "notification-permissions": {
+                    "image": "notifications-ctd"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "slug": "treatment-c",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Du entscheidest, was Standard ist",
+                    "body": "Nimm nicht das Erstbeste, sondern das Beste für dich: Firefox schützt deine Privatsphäre.",
+                    "buttons": {
+                      "primary": {
+                        "title": "Als Standardbrowser festlegen",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  },
+                  "sign-to-sync": {
+                    "title": "Alles ist dort, wo du es brauchst",
+                    "body": "Wenn du willst, bringt Firefox deine Tabs und Passwörter auf all deine Geräte."
+                  },
+                  "notification-permissions": {
+                    "title": "Du bestimmst, was Firefox kann",
+                    "body": "Benachrichtigungen helfen dabei, Tabs zwischen Geräten zu senden und Tipps zu erhalten.  "
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('115.!') >= 0) && (language in ['de']) && (region in ['DE'])))",
+      "startDate": "2023-06-26",
+      "enrollmentEndDate": "2023-08-03",
+      "endDate": null,
+      "proposedDuration": 44,
+      "proposedEnrollment": 30,
+      "referenceBranch": "control",
+      "featureValidationOptOut": false,
+      "localizations": null,
+      "locales": null
+    },
+    {
+      "schemaVersion": "1.12.0",
+      "slug": "release-ios-set-to-default-instructions-no-x",
+      "id": "release-ios-set-to-default-instructions-no-x",
+      "arguments": {},
+      "application": "org.mozilla.ios.Firefox",
+      "appName": "firefox_ios",
+      "appId": "org.mozilla.ios.Firefox",
+      "channel": "release",
+      "userFacingName": "[release] iOS set to default instructions / no X",
+      "userFacingDescription": "Onboarding experiment with showing instructions for how to set to default and removing X",
+      "isEnrollmentPaused": true,
+      "isRollout": false,
+      "bucketConfig": {
+        "randomizationUnit": "nimbus_id",
+        "namespace": "ios-onboarding-framework-feature-release-4",
+        "start": 0,
+        "count": 10000,
+        "total": 10000
+      },
+      "featureIds": [
+        "onboarding-framework-feature"
       ],
       "probeSets": [],
       "outcomes": [
         {
           "slug": "default_browser",
           "priority": "primary"
-        }
-      ],
-      "branches": [
-        {
-          "slug": "control",
-          "ratio": 1,
-          "feature": {
-            "featureId": "messaging",
-            "enabled": true,
-            "value": {
-              "messages": {
-                "default-browser": {
-                  "trigger": [
-                    "I_AM_NOT_DEFAULT_BROWSER",
-                    "SUPPORTS_DEFAULT_BROWSER"
-                  ],
-                  "style": "FALLBACK",
-                  "title": "Default Browser/DefaultBrowserCard.PeaceOfMind.Title.v108",
-                  "text": "Default Browser/DefaultBrowserCard.PeaceOfMind.Description.v108",
-                  "button-label": "Default Browser/DefaultBrowserCard.Button.v2",
-                  "action": "MAKE_DEFAULT_BROWSER_WITH_TUTORIAL",
-                  "is-control": true
-                }
-              },
-              "message-under-experiment": "default-browser",
-              "on-control": "show-next-message",
-              "actions": {},
-              "triggers": {},
-              "styles": {}
-            }
-          }
         },
         {
-          "slug": "treatment-a",
-          "ratio": 1,
-          "feature": {
-            "featureId": "messaging",
-            "enabled": true,
-            "value": {
-              "messages": {
-                "default-browser": {
-                  "trigger": [
-                    "I_AM_NOT_DEFAULT_BROWSER",
-                    "SUPPORTS_DEFAULT_BROWSER"
-                  ],
-                  "style": "FALLBACK",
-                  "title": "Default Browser/DefaultBrowserCard.PeaceOfMind.Title.v108",
-                  "text": "Default Browser/DefaultBrowserCard.PeaceOfMind.Description.v108",
-                  "button-label": "Default Browser/DefaultBrowserCard.Button.v2",
-                  "action": "MAKE_DEFAULT_BROWSER_WITH_TUTORIAL"
-                }
-              },
-              "message-under-experiment": "default-browser",
-              "on-control": "show-next-message",
-              "actions": {},
-              "triggers": {},
-              "styles": {}
-            }
-          }
-        },
-        {
-          "slug": "treatment-b",
-          "ratio": 1,
-          "feature": {
-            "featureId": "messaging",
-            "enabled": true,
-            "value": {
-              "messages": {
-                "default-browser": {
-                  "trigger": [
-                    "I_AM_NOT_DEFAULT_BROWSER",
-                    "SUPPORTS_DEFAULT_BROWSER"
-                  ],
-                  "style": "FALLBACK",
-                  "title": "Default Browser/DefaultBrowserCard.BetterInternet.Title.v108",
-                  "text": "Default Browser/DefaultBrowserCard.BetterInternet.Description.v108",
-                  "button-label": "Default Browser/DefaultBrowserCard.Button.v2",
-                  "action": "MAKE_DEFAULT_BROWSER_WITH_TUTORIAL"
-                }
-              },
-              "message-under-experiment": "default-browser",
-              "on-control": "show-next-message",
-              "actions": {},
-              "triggers": {},
-              "styles": {}
-            }
-          }
-        },
-        {
-          "slug": "treatment-c",
-          "ratio": 1,
-          "feature": {
-            "featureId": "messaging",
-            "enabled": true,
-            "value": {
-              "messages": {
-                "default-browser": {
-                  "trigger": [
-                    "I_AM_NOT_DEFAULT_BROWSER",
-                    "SUPPORTS_DEFAULT_BROWSER"
-                  ],
-                  "style": "FALLBACK",
-                  "title": "Default Browser/DefaultBrowserCard.NextLevel.Title.v108",
-                  "text": "Default Browser/DefaultBrowserCard.NextLevel.Description.v108",
-                  "button-label": "Default Browser/DefaultBrowserCard.Button.v2",
-                  "action": "MAKE_DEFAULT_BROWSER_WITH_TUTORIAL"
-                }
-              },
-              "message-under-experiment": "default-browser",
-              "on-control": "show-next-message",
-              "actions": {},
-              "triggers": {},
-              "styles": {}
-            }
-          }
-        }
-      ],
-      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('108.!') >= 0)))",
-      "startDate": "2022-11-22",
-      "enrollmentEndDate": "2022-11-29",
-      "endDate": null,
-      "proposedDuration": 14,
-      "proposedEnrollment": 7,
-      "referenceBranch": "control",
-      "featureValidationOptOut": false
-    },
-    {
-      "schemaVersion": "1.10.0",
-      "slug": "release-firefox-ios-mr-new-user-onboarding",
-      "id": "release-firefox-ios-mr-new-user-onboarding",
-      "arguments": {},
-      "application": "org.mozilla.ios.Firefox",
-      "appName": "firefox_ios",
-      "appId": "org.mozilla.ios.Firefox",
-      "channel": "release",
-      "userFacingName": "[Release] Firefox iOS MR New User Onboarding",
-      "userFacingDescription": "New onboarding for v106.",
-      "isEnrollmentPaused": true,
-      "isRollout": false,
-      "bucketConfig": {
-        "randomizationUnit": "nimbus_id",
-        "namespace": "ios-mr2022-release-2",
-        "start": 0,
-        "count": 1500,
-        "total": 10000
-      },
-      "featureIds": [
-        "mr2022"
-      ],
-      "probeSets": [],
-      "outcomes": [
-        {
-          "slug": "mr_2022",
+          "slug": "onboarding",
           "priority": "primary"
         }
       ],
@@ -259,47 +454,148 @@
           "slug": "control",
           "ratio": 1,
           "feature": {
-            "featureId": "mr2022",
-            "enabled": true,
-            "value": {
-              "sections-enabled": {
-                "onboarding-first-run-flow": false,
-                "onboarding-upgrade-flow": false,
-                "sync-cfr": false,
-                "jump-back-in-cfr-update": false,
-                "toolbar-cfr-update": false,
-                "wallpaper-onboarding-sheet": false
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  }
+                }
               }
             }
-          }
+          ]
         },
         {
           "slug": "treatment-a",
           "ratio": 1,
           "feature": {
-            "featureId": "mr2022",
-            "enabled": true,
-            "value": {
-              "sections-enabled": {
-                "onboarding-first-run-flow": true,
-                "onboarding-upgrade-flow": true,
-                "sync-cfr": true,
-                "jump-back-in-cfr-update": true,
-                "toolbar-cfr-update": true,
-                "wallpaper-onboarding-sheet": true
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "set-default-browser"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  }
+                },
+                "dismissable": false
               }
             }
-          }
+          ]
+        },
+        {
+          "slug": "treatment-b",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "open-default-browser-popup"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  }
+                },
+                "dismissable": true
+              }
+            }
+          ]
+        },
+        {
+          "slug": "treatment-c",
+          "ratio": 1,
+          "feature": {
+            "featureId": "this-is-included-for-mobile-pre-96-support",
+            "enabled": false,
+            "value": {}
+          },
+          "features": [
+            {
+              "featureId": "onboarding-framework-feature",
+              "enabled": true,
+              "value": {
+                "cards": {
+                  "welcome": {
+                    "title": "Onboarding/Onboarding.Welcome.Title.TreatementA.v114",
+                    "body": "Onboarding/Onboarding.Welcome.Description.TreatementA.v114",
+                    "buttons": {
+                      "primary": {
+                        "title": "Onboarding/Onboarding.Welcome.ActionTreatementA.v114",
+                        "action": "open-default-browser-popup"
+                      },
+                      "secondary": {
+                        "title": "Onboarding/Onboarding.Welcome.Skip.v114",
+                        "action": "next-card"
+                      }
+                    }
+                  }
+                },
+                "dismissable": false
+              }
+            }
+          ]
         }
       ],
-      "targeting": "((is_already_enrolled) || ((days_since_install < 7) && (app_version|versionCompare('106.!') >= 0)))",
-      "startDate": "2022-10-05",
-      "enrollmentEndDate": "2022-11-01",
+      "targeting": "((is_already_enrolled) || ((isFirstRun == 'true') && (app_version|versionCompare('115.!') >= 0) && (region in ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW'])))",
+      "startDate": "2023-06-26",
+      "enrollmentEndDate": "2023-07-18",
       "endDate": null,
-      "proposedDuration": 73,
-      "proposedEnrollment": 24,
+      "proposedDuration": 28,
+      "proposedEnrollment": 14,
       "referenceBranch": "control",
-      "featureValidationOptOut": false
+      "featureValidationOptOut": false,
+      "localizations": null,
+      "locales": null
     }
   ]
 }
