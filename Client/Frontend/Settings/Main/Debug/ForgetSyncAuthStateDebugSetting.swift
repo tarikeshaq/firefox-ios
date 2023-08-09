@@ -10,9 +10,4 @@ class ForgetSyncAuthStateDebugSetting: HiddenSetting {
             string: "Forget Sync auth state",
             attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary])
     }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        settings.profile.rustFxA.syncAuthState.invalidate()
-        settings.tableView.reloadData()
-    }
 }
