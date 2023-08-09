@@ -7,8 +7,6 @@ import Account
 import MozillaAppServices
 import Common
 
-let PendingAccountDisconnectedKey = "PendingAccountDisconnect"
-
 /// This class provides handles push messages from FxA.
 /// For reference, the [message schema][0] and [Android implementation][1] are both useful resources.
 /// [0]: https://github.com/mozilla/fxa-auth-server/blob/master/docs/pushpayloads.schema.json#L26

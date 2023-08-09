@@ -215,7 +215,6 @@
 		396CDB55203C5B870034A3A3 /* TabTrayController+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396CDB54203C5B870034A3A3 /* TabTrayController+KeyCommands.swift */; };
 		396E38CC1EE0816C00CC180F /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34DC84D1A16C40C00D49B7B /* Profile.swift */; };
 		396E38DD1EE081DA00CC180F /* SyncDisplayState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60D03171D511398002FE3F6 /* SyncDisplayState.swift */; };
-		396E38F11EE0C8EC00CC180F /* FxAPushMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3905B4D41E8E7A6B0027D953 /* FxAPushMessageHandler.swift */; };
 		396E38F21EE0C8ED00CC180F /* FxAPushMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3905B4D41E8E7A6B0027D953 /* FxAPushMessageHandler.swift */; };
 		397848DE1ED86605004C0C0B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397848DD1ED86605004C0C0B /* NotificationService.swift */; };
 		397848E21ED86605004C0C0B /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 397848DB1ED86605004C0C0B /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -2172,7 +2171,6 @@
 		281B2BE91ADF4D90002917DC /* MockProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MockProfile.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		2827315E1ABC9BE600AA1954 /* Sync.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sync.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		282731611ABC9BE600AA1954 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		282731621ABC9BE600AA1954 /* Sync-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Sync-Bridging-Header.h"; sourceTree = "<group>"; };
 		282731681ABC9BE700AA1954 /* SyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		282731701ABC9BE700AA1954 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		282915E51AF1A7920006EEB5 /* BrowserSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserSchema.swift; sourceTree = "<group>"; };
@@ -2261,7 +2259,6 @@
 		2E894C7F937BD09A792F14B0 /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		2E9941BE82D457C00639E363 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Shared.strings; sourceTree = "<group>"; };
 		2F13E79A1AC0C02700D75081 /* StringExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensionsTests.swift; sourceTree = "<group>"; };
-		2F14E1391ABB890800FF98DB /* Account-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Account-Bridging-Header.h"; sourceTree = "<group>"; };
 		2F44FA1A1A9D426A00FD20CC /* TestHashExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHashExtensions.swift; sourceTree = "<group>"; };
 		2F44FC711A9E840300FD20CC /* SettingsNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		2F44FCC41A9E85E900FD20CC /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -7161,7 +7158,6 @@
 		282731601ABC9BE600AA1954 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				282731621ABC9BE600AA1954 /* Sync-Bridging-Header.h */,
 				282731611ABC9BE600AA1954 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -7291,9 +7287,16 @@
 		2FA435FC1ABB83B4008031D1 /* Account */ = {
 			isa = PBXGroup;
 			children = (
-				C8340B7224EC69EE00FE91A6 /* FxA */,
-				2F14E1391ABB890800FF98DB /* Account-Bridging-Header.h */,
-				3905B4D41E8E7A6B0027D953 /* FxAPushMessageHandler.swift */,
+				EB07F85E240D695F00924860 /* PushNotificationSetup.swift */,
+				C8E2E80723D20FB3005AACE6 /* FxAWebViewController.swift */,
+				5F130D2D2483508E00B0F7D0 /* FxAWebViewModel.swift */,
+				C8E2E80823D20FB3005AACE6 /* Avatar.swift */,
+				C8E2E80923D20FB3005AACE6 /* RustFirefoxAccounts.swift */,
+				CDB3BE8624746787009320EE /* FirefoxAccountSignInViewController.swift */,
+				437A857727E43FE100E42764 /* FxAWebViewTelemetry.swift */,
+				8ADC2A0F2A33758E00543DAA /* FxALaunchParams.swift */,
+				8ADC2A112A3375B900543DAA /* FxAEntryPoint.swift */,
+				8ADC2A172A33775F00543DAA /* FxASignInViewParameters.swift */,
 				2FA435FD1ABB83B4008031D1 /* Supporting Files */,
 			);
 			path = Account;
@@ -7429,6 +7432,7 @@
 			isa = PBXGroup;
 			children = (
 				397848DF1ED86605004C0C0B /* Info.plist */,
+				3905B4D41E8E7A6B0027D953 /* FxAPushMessageHandler.swift */,
 				397848DD1ED86605004C0C0B /* NotificationService.swift */,
 			);
 			path = NotificationService;
@@ -8700,14 +8704,6 @@
 			path = FeatureFlags;
 			sourceTree = "<group>";
 		};
-		C8340B7224EC69EE00FE91A6 /* FxA */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = FxA;
-			path = FxA/FxA;
-			sourceTree = SOURCE_ROOT;
-		};
 		C83B7DD129BBAF52005565C2 /* SurveySurface */ = {
 			isa = PBXGroup;
 			children = (
@@ -9169,23 +9165,6 @@
 				C8DF92F32A1407BA00AA7B05 /* NimbusOnboardingTestingConfigUtility.swift */,
 			);
 			path = Helpers;
-			sourceTree = "<group>";
-		};
-		C8E2E80623D20FB3005AACE6 /* RustFxA */ = {
-			isa = PBXGroup;
-			children = (
-				EB07F85E240D695F00924860 /* PushNotificationSetup.swift */,
-				C8E2E80723D20FB3005AACE6 /* FxAWebViewController.swift */,
-				5F130D2D2483508E00B0F7D0 /* FxAWebViewModel.swift */,
-				C8E2E80823D20FB3005AACE6 /* Avatar.swift */,
-				C8E2E80923D20FB3005AACE6 /* RustFirefoxAccounts.swift */,
-				CDB3BE8624746787009320EE /* FirefoxAccountSignInViewController.swift */,
-				437A857727E43FE100E42764 /* FxAWebViewTelemetry.swift */,
-				8ADC2A0F2A33758E00543DAA /* FxALaunchParams.swift */,
-				8ADC2A112A3375B900543DAA /* FxAEntryPoint.swift */,
-				8ADC2A172A33775F00543DAA /* FxASignInViewParameters.swift */,
-			);
-			path = RustFxA;
 			sourceTree = "<group>";
 		};
 		C8F457A61F1FD75A000CB895 /* BrowserViewController */ = {
@@ -10139,7 +10118,6 @@
 				962C6C3B297054EC00354BE8 /* Sources */,
 				5A65BE172928619E00E841A7 /* BrowserKit */,
 				45D5EDC1292D636000311934 /* nimbus.fml.yaml */,
-				C8E2E80623D20FB3005AACE6 /* RustFxA */,
 				2FA435FC1ABB83B4008031D1 /* Account */,
 				F84B21C01A090F8100AAB793 /* Client */,
 				EBB894E9219398E500EB91A0 /* content-blocker-lib-ios */,
@@ -12113,7 +12091,6 @@
 				8A5D1CA82A30D6D3005AD35C /* HomeSetting.swift in Sources */,
 				1DFE57FF27BAE3150025DE58 /* HomepageSectionType.swift in Sources */,
 				C2D1A10D2A66C70000205DCC /* BookmarksCoordinator.swift in Sources */,
-				396E38F11EE0C8EC00CC180F /* FxAPushMessageHandler.swift in Sources */,
 				8A76B01629F6EB3900A82607 /* ScreenshotService.swift in Sources */,
 				8A3EF8052A2FCFE500796E3A /* ForgetSyncAuthStateDebugSetting.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
@@ -17173,7 +17150,6 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INFOPLIST_FILE = Sync/Info.plist;
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Sync/Sync-Bridging-Header.h";
 			};
 			name = Fennec;
 		};
@@ -17229,11 +17205,6 @@
 					FxA/FxA/include,
 				);
 				INFOPLIST_FILE = Account/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FxA/FxA/lib",
-				);
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Account/Account-Bridging-Header.h";
 			};
 			name = Fennec;
 		};
@@ -17746,11 +17717,6 @@
 					FxA/FxA/include,
 				);
 				INFOPLIST_FILE = Account/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FxA/FxA/lib",
-				);
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Account/Account-Bridging-Header.h";
 			};
 			name = Firefox;
 		};
@@ -17774,7 +17740,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INFOPLIST_FILE = Sync/Info.plist;
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Sync/Sync-Bridging-Header.h";
 			};
 			name = Firefox;
 		};
@@ -18005,11 +17970,6 @@
 					FxA/FxA/include,
 				);
 				INFOPLIST_FILE = Account/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FxA/FxA/lib",
-				);
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Account/Account-Bridging-Header.h";
 			};
 			name = Fennec_Enterprise;
 		};
@@ -18022,7 +17982,6 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INFOPLIST_FILE = Sync/Info.plist;
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Sync/Sync-Bridging-Header.h";
 			};
 			name = Fennec_Enterprise;
 		};
@@ -18296,11 +18255,6 @@
 					FxA/FxA/include,
 				);
 				INFOPLIST_FILE = Account/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/FxA/FxA/lib",
-				);
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Account/Account-Bridging-Header.h";
 			};
 			name = FirefoxBeta;
 		};
@@ -18330,7 +18284,6 @@
 				INFOPLIST_FILE = Sync/Info.plist;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Sync/Sync-Bridging-Header.h";
 			};
 			name = FirefoxBeta;
 		};
