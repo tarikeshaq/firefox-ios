@@ -7,6 +7,3 @@
 /* The body of the restore tabs pop-up alert. This alert shows when opening up Firefox after it crashed. */
 "Alerts.RestoreTabs.Message.v109" = "Chì peccatu ! Risturà l’unghjette per ripiglià induve vi site piantati.";
 
-/* The title of the restore tabs pop-up alert. This alert shows when opening up Firefox after it crashed. */
-"Alerts.RestoreTabs.Title.v109" = "Firefox s’hè lampatu ! Risturà e vostre unghjette ?";
-
