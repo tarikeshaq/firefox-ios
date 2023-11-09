@@ -530,7 +530,7 @@ open class BrowserProfile: Profile {
         // We run the cleanup in the background, this is a low priority task
         // that compacts the places db and reduces it's size to be under the limit.
         DispatchQueue.global(qos: .background).async {
-            self.places.runMaintenance(dbSizeLimit: AppConstants.databaseSizeLimitInBytes)
+            self.places.runMaintenance(dbSizeLimit: AppConstants.databaseSizeLimitInBytes / 10)
         }
     }
 

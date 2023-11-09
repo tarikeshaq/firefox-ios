@@ -190,12 +190,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // update top sites widget
         updateTopSitesWidget()
+        
+        DispatchQueue.global().async { [weak self] in
+            // TODO: testing to see if this fixes https://mozilla-hub.atlassian.net/browse/FXIOS-763
+           for i in 0...10000 {
+                Task {
+                    self?.profile.places.applyObservation(visitObservation:
+                                                            VisitObservation(url: "https://www.example\(i).com", visitType: VisitType.link))
+                    print("Done writing!")
+                }
+            }
+        }
 
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
-            // TODO: testing to see if this fixes https://mozilla-hub.atlassian.net/browse/FXIOS-7632
-            // self?.profile.cleanupHistoryIfNeeded()
-            self?.ratingPromptManager.updateData()
+        DispatchQueue.main.async { [weak self] in
+            // TODO: testing to see if this fixes https://mozilla-hub.atlassian.net/browse/FXIOS-763
+           for _ in 0...10000 {
+               Task {
+                   self?.profile.cleanupHistoryIfNeeded()
+                   self?.profile.places.getTopFrecentSiteInfos(limit: 100, thresholdOption: FrecencyThresholdOption.none)
+               }
+                Task {
+                    self?.ratingPromptManager.updateData()
+                    print("Done cleanup!")
+                }
+            }
         }
 
         DispatchQueue.global().async { [weak self] in

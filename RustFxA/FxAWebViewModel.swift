@@ -78,7 +78,7 @@ class FxAWebViewModel {
         return (hasOnlySecureContent ? "🔒 " : "") + (url?.host ?? "")
     }
 
-    func setupFirstPage(completion: @escaping (URLRequest, TelemetryWrapper.EventMethod?) -> Void) {
+    func setupFirstPage(completion: @escaping  (URLRequest, TelemetryWrapper.EventMethod?) -> Void) {
         profile.rustFxA.accountManager.uponQueue(.main) { accountManager in
             let entrypoint = self.deepLinkParams.entrypoint.rawValue
             accountManager.getManageAccountURL(entrypoint: "ios_settings_\(entrypoint)") { [weak self] result in
